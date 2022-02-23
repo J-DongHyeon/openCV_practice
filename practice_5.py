@@ -53,12 +53,15 @@ plt.subplot(122); plt.imshow(closing2, cmap='gray')
 '''
 
 img = cv2.imread('morp2.PNG', cv2.IMREAD_GRAYSCALE)
+
 img_inv = cv2.bitwise_not(img)
 _, bw = cv2.threshold(img_inv, 0, 255, cv2.THRESH_BINARY+cv2.THRESH_OTSU)
+'''
 plt.figure(figsize=(10,3))
 plt.imshow(img, cmap = 'gray')
 plt.figure(figsize=(10,3))
 plt.imshow(bw, cmap = 'gray')
+'''
 
 horizontal = np.copy(bw)
 cols = horizontal.shape[1]
@@ -68,9 +71,40 @@ horizontalStruc = cv2.getStructuringElement(cv2.MORPH_RECT, (horizontal_size, 1)
 horizontal = cv2.erode(horizontal, horizontalStruc)
 horizontal = cv2.dilate(horizontal, horizontalStruc)
 
+'''
 plt.figure(figsize=(10, 3))
 plt.imshow(horizontal, cmap = 'gray')
+'''
 
-
+vertical = np.copy(bw)
+rows = vertical.shape[0]
+vertical_size = rows // 25
+verticalStruc = cv2.getStructuringElement(cv2.MORPH_RECT, (1, vertical_size))
+vertical = cv2.erode(vertical, verticalStruc)
+vertical = cv2.dilate(vertical, verticalStruc)
+'''
+plt.figure(figsize=(10, 3))
+plt.imshow(vertical, cmap = 'gray')
+'''
+vertical_inv = cv2.bitwise_not(vertical)
+'''
+plt.figure(figsize=(10, 3))
+plt.imshow(vertical_inv, cmap = 'gray')
+'''
+kernel = np.ones((3, 3), np.uint8)
+edges = cv2.morphologyEx(vertical, cv2.MORPH_GRADIENT, kernel)
+'''
+plt.figure(figsize=(10, 3))
+plt.imshow(edges, cmap = 'gray')
+'''
+smooth = cv2.blur(vertical_inv, (7, 7))
+'''
+plt.figure(figsize=(10, 3))
+plt.imshow(smooth, cmap = 'gray')
+'''
+(rows, cols) = np.where(edges != 0)
+vertical_inv[rows, cols] = smooth[rows, cols]
+plt.figure(figsize=(10, 3))
+plt.imshow(vertical_inv, cmap = 'gray')
 
 
