@@ -107,4 +107,8 @@ vertical_inv[rows, cols] = smooth[rows, cols]
 plt.figure(figsize=(10, 3))
 plt.imshow(vertical_inv, cmap = 'gray')
 
-
+kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (8, 8))
+final = cv2.morphologyEx(vertical, cv2.MORPH_OPEN, kernel)
+final = cv2.bitwise_not(final)
+plt.figure(figsize=(10, 3))
+plt.imshow(final, cmap = 'gray')
